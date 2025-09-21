@@ -14,7 +14,8 @@
 | `NewsAgent` | 코인데스크, 코인텔레그래프, 구글 뉴스 RSS를 조회하여 관련 뉴스를 수집하고, 추적 중인 심볼을 자동 감지합니다. |
 | `SentimentAgent` | LLM(기본은 규칙 기반 모델)으로 뉴스 별 감성 점수를 산출합니다. |
 | `StrategyAgent` | 시세 변화율과 뉴스 감성 점수를 융합해 매수/매도 후보를 선정합니다. |
-| `PortfolioAgent` | 전략 에이전트가 생성한 의사결정을 바탕으로 가상의 KRW 포트폴리오를 업데이트합니다. |
+| `RiskManagementAgent` | 포지션별 손절/익절 기준을 감시하고 충돌하는 시그널을 정리합니다. |
+| `PortfolioAgent` | 전략 및 리스크 관리 의사결정을 반영해 포트폴리오를 조정하고, 비중 제한과 리밸런싱을 수행합니다. |
 
 모든 에이전트는 `AgentOrchestrator`를 통해 순차적으로 실행되며, 공유 상태(`AgentState`)를 주고받습니다.
 
@@ -39,6 +40,13 @@
    - `--cycles`: 에이전트 파이프라인 반복 실행 횟수
    - `--delay`: 반복 사이 대기 시간(초)
    - `--symbols`: 감시할 심볼 재정의 (예: `--symbols BTC ETH XRP`)
+   - `--initial-cash`: 시뮬레이션 시작 현금 잔고 (KRW)
+   - `--trade-fraction`: 거래 시 사용 가능한 현금 비중
+   - `--min-cash-reserve`: 항상 유지할 현금 비율(리스크 관리)
+   - `--min-trade-value`: 최소 체결 금액 (KRW)
+   - `--stop-loss-pct` / `--take-profit-pct`: 포지션 손절/익절 기준(%)
+   - `--max-position-allocation`: 단일 코인에 허용되는 최대 포지션 비중
+   - `--rebalance-buffer`: 비중 초과 허용 오차 (초과 시 자동 리밸런싱)
 
 3. **테스트 실행**
 
@@ -50,6 +58,7 @@
 
 - **실제 LLM 연동**: `multi_agent_crypto/llm/base.py`의 `LLMClient` 인터페이스를 구현하여 OpenAI, Azure OpenAI, Anthropic 등 원하는 모델과 통합할 수 있습니다.
 - **뉴스 소스 추가**: `config.default_news_sources()`에 `NewsSource`를 추가하거나, 실행 시 구성 객체를 수정하면 됩니다.
+- **리스크 전략 조정**: `SystemConfig`의 손절/익절, 포지션 비중 제한, 리밸런스 버퍼 등을 세밀하게 조정하여 보수적·공격적 성향을 구현할 수 있습니다.
 - **실거래 연동**: `PortfolioAgent` 대신 실시간 주문 실행 로직을 작성할 수 있도록 구조를 모듈화했습니다. 단, API 키 관리와 리스크 제어를 반드시 선행하세요.
 
 ## 프로젝트 구조

@@ -22,6 +22,49 @@ def build_parser() -> argparse.ArgumentParser:
         nargs="*",
         help="Override tracked symbols (space separated list, e.g. BTC ETH XRP)",
     )
+    parser.add_argument("--initial-cash", type=float, help="Initial cash balance", default=None)
+    parser.add_argument(
+        "--trade-fraction",
+        type=float,
+        help="Fraction of available cash deployed per trade",
+        default=None,
+    )
+    parser.add_argument(
+        "--min-cash-reserve",
+        type=float,
+        help="Minimum fraction of cash to keep as reserve",
+        default=None,
+    )
+    parser.add_argument(
+        "--min-trade-value",
+        type=float,
+        help="Minimum KRW amount per trade",
+        default=None,
+    )
+    parser.add_argument(
+        "--stop-loss-pct",
+        type=float,
+        help="Percentage drop from average price to trigger stop loss",
+        default=None,
+    )
+    parser.add_argument(
+        "--take-profit-pct",
+        type=float,
+        help="Percentage gain from average price to trigger take profit",
+        default=None,
+    )
+    parser.add_argument(
+        "--max-position-allocation",
+        type=float,
+        help="Maximum fraction of portfolio value allocated to a single position",
+        default=None,
+    )
+    parser.add_argument(
+        "--rebalance-buffer",
+        type=float,
+        help="Tolerance above the allocation target before trimming positions",
+        default=None,
+    )
     return parser
 
 
@@ -29,6 +72,22 @@ async def async_main(args: argparse.Namespace) -> AgentState:
     config = SystemConfig()
     if args.symbols:
         config.tracked_symbols = [symbol.upper() for symbol in args.symbols]
+    if args.initial_cash is not None:
+        config.initial_cash = args.initial_cash
+    if args.trade_fraction is not None:
+        config.trade_fraction = args.trade_fraction
+    if args.min_cash_reserve is not None:
+        config.min_cash_reserve = args.min_cash_reserve
+    if args.min_trade_value is not None:
+        config.min_trade_value = args.min_trade_value
+    if args.stop_loss_pct is not None:
+        config.stop_loss_pct = args.stop_loss_pct
+    if args.take_profit_pct is not None:
+        config.take_profit_pct = args.take_profit_pct
+    if args.max_position_allocation is not None:
+        config.max_position_allocation = args.max_position_allocation
+    if args.rebalance_buffer is not None:
+        config.rebalance_buffer = args.rebalance_buffer
     agents = config.create_agents()
     log_level = getattr(logging, str(args.log_level).upper(), logging.INFO)
     for agent in agents:
