@@ -74,7 +74,13 @@ class NewsAgent(BaseAgent):
             link = (item.findtext("link") or "").strip()
             description = (item.findtext("description") or "").strip()
             pub_date_raw = item.findtext("pubDate")
-            published_at = parsedate_to_datetime(pub_date_raw) if pub_date_raw else datetime.now(timezone.utc)
+            if pub_date_raw:
+                try:
+                    published_at = parsedate_to_datetime(pub_date_raw)
+                except (ValueError, TypeError):
+                    published_at = datetime.now(timezone.utc)
+            else:
+                published_at = datetime.now(timezone.utc)
             uid_basis = f"{source.name}:{link or title}"
             article_id = hashlib.sha256(uid_basis.encode("utf-8")).hexdigest()
             symbols = self._detect_symbols(title, description)
