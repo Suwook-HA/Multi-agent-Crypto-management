@@ -46,6 +46,7 @@
    pytest
    ```
 
+
 ## OpenAI GPT-5 감성 분석 연동
 
 규칙 기반 LLM 대신 OpenAI GPT-5 모델을 사용해 뉴스 감성 분석을 수행할 수 있습니다. `OPENAI_API_KEY` 환경 변수가 필요하며, 다음 절차를 따르면 됩니다.
