@@ -16,7 +16,7 @@ dev = [
 monitoring = [
     "fastapi>=0.110",
     "uvicorn>=0.22",
-    "aiofiles>=23",
+    "aiofiles>=23,<24",
 ]
 
 [build-system]
