@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>멀티 에이전트 암호화폐 모니터링</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-title">
+        <h1>멀티 에이전트 암호화폐 모니터링</h1>
+        <p>시장 데이터와 에이전트 의사결정을 한눈에 파악하세요.</p>
+      </div>
+      <div class="status-panel" id="status-panel">
+        <span class="status-indicator" id="status-indicator"></span>
+        <span class="status-text" id="status-text">데이터 수신 대기 중</span>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="summary-grid">
+        <article class="card">
+          <h2>총 자산 가치</h2>
+          <p class="metric" id="portfolio-value">-</p>
+          <p class="sub" id="portfolio-base">기준 통화: -</p>
+        </article>
+        <article class="card">
+          <h2>가용 현금</h2>
+          <p class="metric" id="cash-balance">-</p>
+          <p class="sub">거래 가능한 유동성</p>
+        </article>
+        <article class="card">
+          <h2>포지션 수</h2>
+          <p class="metric" id="positions-count">0</p>
+          <p class="sub">보유 중인 심볼 개수</p>
+        </article>
+        <article class="card sentiment-card">
+          <h2>감성 요약</h2>
+          <div class="sentiment-summary">
+            <span class="tag positive" id="sentiment-positive">긍정 0</span>
+            <span class="tag neutral" id="sentiment-neutral">중립 0</span>
+            <span class="tag negative" id="sentiment-negative">부정 0</span>
+          </div>
+          <p class="sub" id="sentiment-score">평균 점수 0.00</p>
+        </article>
+      </section>
+
+      <section class="card market-card">
+        <div class="section-header">
+          <h2>시장 데이터</h2>
+          <span class="section-note" id="market-timestamp">업데이트 대기 중</span>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>심볼</th>
+                <th>가격</th>
+                <th>24h 변화</th>
+                <th>24h 고가</th>
+                <th>24h 저가</th>
+                <th>24h 거래량</th>
+              </tr>
+            </thead>
+            <tbody id="market-body">
+              <tr>
+                <td class="placeholder" colspan="6">데이터를 불러오는 중...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="split-grid">
+        <article class="card decisions-card">
+          <div class="section-header">
+            <h2>전략 의사결정</h2>
+            <span class="section-note" id="decision-count">0건</span>
+          </div>
+          <ul class="decision-list" id="decision-list">
+            <li class="placeholder">현재 대기 중인 의사결정이 없습니다.</li>
+          </ul>
+        </article>
+
+        <article class="card positions-card">
+          <div class="section-header">
+            <h2>포지션</h2>
+            <span class="section-note">현재 평가액 기준</span>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>심볼</th>
+                  <th>보유수량</th>
+                  <th>평균 매수가</th>
+                  <th>현재가</th>
+                  <th>평가액</th>
+                </tr>
+              </thead>
+              <tbody id="positions-body">
+                <tr>
+                  <td class="placeholder" colspan="5">보유 중인 포지션이 없습니다.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="card history-card">
+        <div class="section-header">
+          <h2>체결 내역</h2>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>시간</th>
+                <th>심볼</th>
+                <th>액션</th>
+                <th>수량</th>
+                <th>가격</th>
+                <th>사유</th>
+              </tr>
+            </thead>
+            <tbody id="history-body">
+              <tr>
+                <td class="placeholder" colspan="6">최근 체결 내역이 없습니다.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card news-card">
+        <div class="section-header">
+          <h2>뉴스 &amp; 감성</h2>
+          <span class="section-note" id="news-count">0건</span>
+        </div>
+        <div class="news-list" id="news-list">
+          <p class="placeholder">관련 뉴스가 수집되면 이곳에 표시됩니다.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>© 2024 Multi-agent Crypto Management · 실거래에 활용하지 마세요.</p>
+    </footer>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

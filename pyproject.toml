@@ -13,6 +13,13 @@ dependencies = [
 dev = [
     "pytest>=7",
 ]
+monitoring = [
+    "fastapi>=0.110",
+    "uvicorn>=0.22",
+]
+llm = [
+    "openai>=1.14,<2.0",
+]
 
 [build-system]
 requires = ["setuptools>=65", "wheel"]
