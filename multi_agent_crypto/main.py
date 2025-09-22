@@ -22,6 +22,27 @@ def build_parser() -> argparse.ArgumentParser:
         nargs="*",
         help="Override tracked symbols (space separated list, e.g. BTC ETH XRP)",
     )
+    parser.add_argument(
+        "--llm-provider",
+        choices=["rule-based", "openai"],
+        default="rule-based",
+        help="Sentiment analysis backend to use",
+    )
+    parser.add_argument(
+        "--openai-model",
+        default="gpt-5.0-mini",
+        help="OpenAI GPT-5 model name (used when --llm-provider=openai)",
+    )
+    parser.add_argument(
+        "--openai-temperature",
+        type=float,
+        default=0.2,
+        help="Sampling temperature for GPT-5 sentiment analysis",
+    )
+    parser.add_argument(
+        "--openai-api-key",
+        help="Override OPENAI_API_KEY environment variable for GPT-5 integration",
+    )
     return parser
 
 
@@ -29,7 +50,16 @@ async def async_main(args: argparse.Namespace) -> AgentState:
     config = SystemConfig()
     if args.symbols:
         config.tracked_symbols = [symbol.upper() for symbol in args.symbols]
-    agents = config.create_agents()
+    llm_client = None
+    if getattr(args, "llm_provider", "rule-based") == "openai":
+        from .llm import OpenAIGPT5LLM
+
+        llm_client = OpenAIGPT5LLM(
+            api_key=getattr(args, "openai_api_key", None),
+            model=getattr(args, "openai_model", "gpt-5.0-mini"),
+            temperature=getattr(args, "openai_temperature", 0.2),
+        )
+    agents = config.create_agents(llm_client=llm_client)
     log_level = getattr(logging, str(args.log_level).upper(), logging.INFO)
     for agent in agents:
         agent.configure_logger(level=log_level)
