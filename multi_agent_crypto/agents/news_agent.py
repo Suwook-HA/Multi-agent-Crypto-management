@@ -54,7 +54,7 @@ class NewsAgent(BaseAgent):
         return state
 
     async def _fetch_source(self, client: httpx.AsyncClient, source: NewsSource) -> List[NewsArticle]:
-        response = await client.get(source.url)
+        response = await client.get(source.url, follow_redirects=True)
         response.raise_for_status()
         return self._parse_rss(response.text, source)
 
