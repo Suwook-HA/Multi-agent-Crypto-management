@@ -9,6 +9,7 @@ from typing import List
 
 from .config import SystemConfig
 from .orchestrator import AgentOrchestrator
+from .llm import LLMClient, RuleBasedLLM
 from .types import AgentState
 
 
@@ -18,6 +19,22 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--delay", type=float, default=0.0, help="Delay between cycles in seconds")
     parser.add_argument("--log-level", default="INFO", help="Logging level")
     parser.add_argument(
+        "--llm-provider",
+        default="rule-based",
+        choices=["rule-based", "openai"],
+        help="Select the LLM backend for sentiment analysis",
+    )
+    parser.add_argument(
+        "--openai-model",
+        default="gpt-4o-mini",
+        help="OpenAI model to use when --llm-provider=openai",
+    )
+    parser.add_argument(
+        "--openai-api-key",
+        default=None,
+        help="Explicit OpenAI API key (otherwise OPENAI_API_KEY env var is used)",
+    )
+    parser.add_argument(
         "--symbols",
         nargs="*",
         help="Override tracked symbols (space separated list, e.g. BTC ETH XRP)",
@@ -25,11 +42,22 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def build_llm_client(args: argparse.Namespace) -> LLMClient:
+    """Construct the configured LLM client for sentiment analysis."""
+
+    if args.llm_provider == "openai":
+        from .llm.openai import OpenAIChatLLM
+
+        return OpenAIChatLLM(api_key=args.openai_api_key, model=args.openai_model)
+    return RuleBasedLLM()
+
+
 async def async_main(args: argparse.Namespace) -> AgentState:
     config = SystemConfig()
     if args.symbols:
         config.tracked_symbols = [symbol.upper() for symbol in args.symbols]
-    agents = config.create_agents()
+    llm_client = build_llm_client(args)
+    agents = config.create_agents(llm_client=llm_client)
     log_level = getattr(logging, str(args.log_level).upper(), logging.INFO)
     for agent in agents:
         agent.configure_logger(level=log_level)
