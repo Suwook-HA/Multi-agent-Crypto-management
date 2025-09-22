@@ -19,6 +19,10 @@ monitoring = [
     "uvicorn>=0.22",
     "aiofiles>=23,<24",
 ]
+llm = [
+    "openai>=1.14,<2.0",
+    "aiofiles>=23,<24",
+]
 
 [build-system]
 requires = ["setuptools>=65", "wheel"]

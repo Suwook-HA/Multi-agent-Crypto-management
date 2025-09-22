@@ -26,13 +26,19 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--openai-model",
-        default="gpt-4o-mini",
-        help="OpenAI model to use when --llm-provider=openai",
+        default="gpt-5.0-mini",
+        help="OpenAI GPT-5 model name (used when --llm-provider=openai)",
+    )
+    parser.add_argument(
+        "--openai-temperature",
+        type=float,
+        default=0.2,
+        help="Sampling temperature for GPT-5 sentiment analysis",
     )
     parser.add_argument(
         "--openai-api-key",
         default=None,
-        help="Explicit OpenAI API key (otherwise OPENAI_API_KEY env var is used)",
+        help="Override OPENAI_API_KEY environment variable for GPT-5 integration",
     )
     parser.add_argument(
         "--symbols",
@@ -46,9 +52,13 @@ def build_llm_client(args: argparse.Namespace) -> LLMClient:
     """Construct the configured LLM client for sentiment analysis."""
 
     if args.llm_provider == "openai":
-        from .llm.openai import OpenAIChatLLM
+        from .llm.openai import OpenAIGPT5LLM
 
-        return OpenAIChatLLM(api_key=args.openai_api_key, model=args.openai_model)
+        return OpenAIGPT5LLM(
+            api_key=args.openai_api_key,
+            model=args.openai_model,
+            temperature=args.openai_temperature,
+        )
     return RuleBasedLLM()
 
 
@@ -56,6 +66,7 @@ async def async_main(args: argparse.Namespace) -> AgentState:
     config = SystemConfig()
     if args.symbols:
         config.tracked_symbols = [symbol.upper() for symbol in args.symbols]
+    
     llm_client = build_llm_client(args)
     agents = config.create_agents(llm_client=llm_client)
     log_level = getattr(logging, str(args.log_level).upper(), logging.INFO)

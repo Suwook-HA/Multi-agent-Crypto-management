@@ -46,6 +46,31 @@
    pytest
    ```
 
+
+## OpenAI GPT-5 감성 분석 연동
+
+규칙 기반 LLM 대신 OpenAI GPT-5 모델을 사용해 뉴스 감성 분석을 수행할 수 있습니다. `OPENAI_API_KEY` 환경 변수가 필요하며, 다음 절차를 따르면 됩니다.
+
+1. **의존성 설치**
+
+   ```bash
+   pip install -e .[llm]
+   ```
+
+2. **API 키 설정**
+
+   ```bash
+   export OPENAI_API_KEY="sk-..."
+   ```
+
+3. **GPT-5 기반 시뮬레이션 실행**
+
+   ```bash
+   python -m multi_agent_crypto.main --llm-provider openai --cycles 1 --openai-model gpt-5.0-mini
+   ```
+
+   `--openai-temperature` 옵션으로 샘플링 온도를 조절하거나, `--openai-api-key` 인자를 통해 환경 변수 대신 직접 키를 전달할 수 있습니다.
+
 ## 모니터링 대시보드 실행
 
 FastAPI 기반의 경량 서버와 정적 프론트엔드가 결합된 모니터링 대시보드에서 시장 데이터와 에이전트 결괏값을 실시간으로 살펴볼 수 있습니다. 기본 설정은 1분 주기로 상태를 새로고침하며, 추적 심볼이나 주기를 옵션으로 변경할 수 있습니다.
